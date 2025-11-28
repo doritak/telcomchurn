@@ -24,6 +24,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from xgboost import XGBClassifier
 
+from sidebar import render_sidebar
+
+render_sidebar()
 
 st.title("Prediction Page")
 st.write("This is the prediction page. Here you can load a trained model and make predictions on new data.")
@@ -98,8 +101,8 @@ if model_file is not None:
         st.warning("No ColumnTransformer found inside the model pipeline (or model is not a Pipeline).")
     else:
         feature_names = column_transformer.get_feature_names_out()
-        st.write("### Feature columns expected by the model (after transformation):")
-        st.write(feature_names)
+        # st.write("### Feature columns expected by the model (after transformation):")
+        # st.write(feature_names)
 
     if st.button("Predict"):
         input_df = pd.DataFrame(input_data)

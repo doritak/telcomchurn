@@ -26,7 +26,9 @@ from xgboost import XGBClassifier
 from sklearn.metrics import confusion_matrix, classification_report, f1_score
 from sklearn.model_selection import cross_val_score
 
+from sidebar import render_sidebar
 
+render_sidebar()
 
 def load_data(path):
     df = pd.read_csv(path)

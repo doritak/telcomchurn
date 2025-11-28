@@ -13,7 +13,7 @@ from copy import deepcopy
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
 from sklearn.model_selection import train_test_split
 from sklearn.compose import make_column_selector as selector
 
@@ -27,6 +27,10 @@ from xgboost import XGBClassifier
 
 from sklearn.metrics import confusion_matrix, classification_report, f1_score
 from sklearn.model_selection import cross_val_score
+
+from sidebar import render_sidebar
+
+render_sidebar()
 
 if "scores" not in st.session_state:
     # Try to load previous scores from pickle (optional)
@@ -85,6 +89,7 @@ st.write(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}")
 ### Select the model
 models_options = {
     "Gradient Boosting": GradientBoostingClassifier(),
+    "Logistic Regression CV": LogisticRegressionCV(),
     "AdaBoost": AdaBoostClassifier(),
     "Random Forest": RandomForestClassifier(),
     "Decision Tree": DecisionTreeClassifier(),
@@ -141,8 +146,13 @@ if model_name in treeModels:
     st.session_state.scores.append(run_info)
 
 else:
-    st.write("Selected model is not tree-based. ")
-    model = models_options[model_name]
+    if model_name == "Logistic Regression CV":  
+        st.write("Selected model is Logistic Regression with Cross-Validation.")
+        model = models_options[model_name].set_params(cv=5, class_weight='balanced')
+    else:
+        st.write("Selected model is not tree-based. ")
+        model = models_options[model_name]
+    
     pipeline_model = Pipeline(steps=[
         ("preprocessor", preprocessor),
         ("model", model)
@@ -153,7 +163,7 @@ else:
     st.write(f"F1 Score for {model_name}: {f1:.4f}")
     st.write("Classification Report:")
     st.text(classification_report(y_test, y_pred))
-    # scores[model_name] = round(f1_score(y_test, y_pred, average='weighted'), 3)
+
     cm = confusion_matrix(y_test, y_pred)
     
     fig, ax = plt.subplots()
@@ -183,7 +193,10 @@ st.write("Model training and evaluation completed.")
 
 
 st.write("F1 Scores of all trained models:")
-st.write(st.session_state.scores)
+scores_df = pd.DataFrame(st.session_state.scores)
+scores_df = scores_df.iloc[::-1]   # reverse index order
+st.dataframe(scores_df)
+# st.write(st.session_state.scores)
 
 #### guardar el modelo entrenado ####
 model_filename = f"data/{model_name.replace(' ', '_').lower()}_model.pkl"
