@@ -189,4 +189,16 @@ st.write(st.session_state.scores)
 model_filename = f"data/{model_name.replace(' ', '_').lower()}_model.pkl"
 with open(model_filename, "wb") as f:
     pickle.dump(pipeline_model, f)
+    
+# ==== Allow user to download model to their PC ====
+with open(model_filename, "rb") as f:
+    st.download_button(
+        label="Download trained model",
+        data=f,
+        file_name=f"{model_name.replace(' ', '_').lower()}_model.pkl",
+        mime="application/octet-stream"
+    )
 st.success(f"Trained model saved as {model_filename}")
+
+st.write("You can now proceed to the 'Model Evaluation' page to compare model performances.")
+st.write("### End of Models Page")
