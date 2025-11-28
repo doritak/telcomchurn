@@ -155,6 +155,8 @@ cat_Columns = []
 num_Columns = []
 
 for col in df.columns:
+    if col == "Churn":
+        continue
     unique_vals = df[col].dropna().unique()
 
     # Categóricas reales (object o string)
