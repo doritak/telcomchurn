@@ -48,8 +48,10 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 else:
     df = load_data(path)
-
-df.drop(columns=["Unnamed: 0","customerID"], inplace=True)
+    
+if "Unnamed: 0" in df.columns and "customerID" in df.columns:
+    df.drop(columns=["Unnamed: 0","customerID"], inplace=True)
+    
 columns = [col for col in df.columns if col != "Churn"]
    
 cols_to_drop = st.multiselect(
