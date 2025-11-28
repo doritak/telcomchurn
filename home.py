@@ -76,8 +76,8 @@ if st.button("Save Dataset"):
     st.success("Dataset saved successfully.")
     st.write("Now you must go to Models page...")
     # Cambio de 'pantalla' para Streamlit 1.24.1
-    st.session_state.pages = "Models"
-    st.experimental_rerun()
+    # st.session_state.pages = "Models"
+    # st.experimental_rerun()
 
 
 ######### Dataset Overview #########
