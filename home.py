@@ -148,8 +148,25 @@ with right_col:
     fig2 = px.bar(contract_churn, barmode='group', title='Churn Rate by Contract Type')
     st.plotly_chart(fig2)
 
-cat_Columns = df.select_dtypes(include=["object"]).columns.tolist()
-num_Columns = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
+# cat_Columns = df.select_dtypes(include=["object"]).columns.tolist()
+# num_Columns = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
+
+cat_Columns = []
+num_Columns = []
+
+for col in df.columns:
+    unique_vals = df[col].dropna().unique()
+
+    # Categóricas reales (object o string)
+    if df[col].dtype == "object":
+        cat_Columns.append(col)
+
+    # Categóricas NUMÉRICAS (ej: SeniorCitizen)
+    elif 2 <= len(unique_vals) <= 10:
+        cat_Columns.append(col)
+
+    else:
+        num_Columns.append(col)
 
 st.write("### Categorical Features vs Churn")
 st.write(f"The categorical features in the dataset are: {', '.join(cat_Columns)}")
